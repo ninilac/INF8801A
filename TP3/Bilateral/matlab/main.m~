@@ -1,0 +1,37 @@
+% Fonction principale du TP sur le filtre bilat�ral
+
+clc
+clear all
+close all
+
+%% Denoising
+% Il s'agit d'une simple application du filtre bilat�ral.
+
+noise = rgb2hsv(imread('../data/taj-rgb-noise.jpg'));
+figure;
+imshow(noise(:,:,3)); title('Image originale (bruit�e)');
+
+figure;
+% TODO Question 1 :
+filtered = medfilt2(noise(:,:,3), [ 5 5 ], 'symmetric');
+imshow(filtered); title('Image filtr�e');
+
+%% Tone mapping
+% Il s'agit de compresser la plage d'intensit�es d'une image en pr�servant
+% les d�tails. Pour cela, on diminue les contrastes globaux en conservant
+% les contrastes locaux.
+
+% lecture de l'image hdr (� partir de 3 expositions diff�rentes)
+srcFolder = '../data/hdr/memorial/'; ext = '.png';
+src = double(imread([srcFolder 'low' ext])) + double(imread([srcFolder 'mid' ext])) + double(imread([srcFolder 'high' ext]));
+
+% normalisation
+src = src - min(src(:));
+src = src./max(src(:));
+figure; imshow(src); title('Réduction uniforme linéaire')
+
+% Filtrage avec hdr.m (Question 2)
+dst = hdr(src);
+
+figure;
+imshow(dst); title('Image HDR');
