@@ -20,9 +20,9 @@ RVB(:,3) = B;
 
 %% get hull
 hull = convhulln(RVB);
-tri = delaunay(hull(:,1), hull(:,2));
 figure;
 scatter3(RVB(:,1),RVB(:,2),RVB(:,3));
+tri = triangulation(hull, RVB(:,1),RVB(:,2),RVB(:,3));
 figure;
-trimesh(hull, RVB(:,1),RVB(:,2),RVB(:,3));
+trimesh(tri);
 
