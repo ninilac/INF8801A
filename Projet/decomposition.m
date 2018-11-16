@@ -20,9 +20,17 @@ RVB(:,3) = B;
 
 %% get hull
 hull = convhulln(RVB);
-figure;
-scatter3(RVB(:,1),RVB(:,2),RVB(:,3));
+%figure;
+%scatter3(RVB(:,1),RVB(:,2),RVB(:,3));
 tri = triangulation(hull, RVB(:,1),RVB(:,2),RVB(:,3));
-figure;
-trimesh(tri);
+% figure;
+% trimesh(tri);
 hullEdges = edges(tri);
+currentEdge = hullEdges(1, :);
+vertices = tri.Points;
+faces1 = vertexAttachments(tri, currentEdge(1));
+faces2 = vertexAttachments(tri, currentEdge(2));
+relatedFaces = union(faces1{1}, faces2{1});
+
+
+
