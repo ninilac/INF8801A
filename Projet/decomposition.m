@@ -25,4 +25,4 @@ scatter3(RVB(:,1),RVB(:,2),RVB(:,3));
 tri = triangulation(hull, RVB(:,1),RVB(:,2),RVB(:,3));
 figure;
 trimesh(tri);
-
+hullEdges = edges(tri);

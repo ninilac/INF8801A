@@ -1,5 +1,15 @@
 function newHull = SimplifyHull(hull)
-    
+    hullEdges = edges(hull);
+    for edgeIndex = 1:size(hullEdges)
+        currentEdge = hullEdges(edgeIndex, :);
+        vertex1 = hull.Points(currentEdge(1));
+        vertex2 = hull.Points(currentEdge(2));
+        
+        %TODO: get related faces to vertex 1 and 2
+        for faceIndex = 1:size(relatedFaces)
+        %TODO: 
+        end
+    end
 
 retirer une arrete :
     liste1,liste2,compte vide
