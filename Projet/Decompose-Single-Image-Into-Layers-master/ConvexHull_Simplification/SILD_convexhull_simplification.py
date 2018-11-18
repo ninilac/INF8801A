@@ -7,9 +7,9 @@ from scipy.spatial import ConvexHull
 from scipy.spatial import Delaunay
 from scipy.optimize import *
 from math import *
-import cvxopt   
 import PIL.Image as Image  
-import sys    
+import sys
+import json, os
 
 ######***********************************************************************************************
 
@@ -198,14 +198,14 @@ def remove_one_edge_by_finding_smallest_adding_volume_with_test_conditions(mesh,
         b=-np.asfarray(b)
         
         c=np.asfarray(c)
-        cvxopt.solvers.options['show_progress'] = False
-        cvxopt.solvers.options['glpk'] = dict(msg_lev='GLP_MSG_OFF')
+        #cvxopt.solvers.options['show_progress'] = False
+        #cvxopt.solvers.options['glpk'] = dict(msg_lev='GLP_MSG_OFF')
 
-        res = cvxopt.solvers.lp( cvxopt.matrix(c), cvxopt.matrix(A), cvxopt.matrix(b), solver='glpk' )
+        res = linprog( c, A, b )
 
-        if res['status']=='optimal':
+        if res['status'] == 0:
                 
-            newpoint = np.asfarray( res['x'] ).squeeze()
+            newpoint = np.asfarray(res['x']).squeeze()
         
 
             ######## using objective function to calculate (volume) or (distance to face) as priority.
@@ -230,13 +230,11 @@ def remove_one_edge_by_finding_smallest_adding_volume_with_test_conditions(mesh,
         #         ##### check our test to see if the solver fails normally
         #         if edge_normal_test(vertices,faces,face_index,vertex1,vertex2)==1: ### means all normal dot value are positive
         #             print '!!!edge_normal_neighbor_normal_dotvalue all positive, but solver fails'
-              
-                
 
-    if option==1:
+    if option == 1:
         if len(temp_list1)==0:
-            print('all fails')
-            hull=ConvexHull(mesh.vs)
+            print('all fails 1')
+            hull = ConvexHull(mesh.vs)
         else:
             min_tuple=min(temp_list1,key=lambda x: x[1])
             # print min_tuple
@@ -246,13 +244,13 @@ def remove_one_edge_by_finding_smallest_adding_volume_with_test_conditions(mesh,
             new_total_points=mesh.vs
             new_total_points.append(final_point)
 
-            hull=ConvexHull(np.array(new_total_points))
+            hull = ConvexHull(np.array(new_total_points))
         return hull
     
-    if option==2:
+    if option == 2:
         
         if len(temp_list1)==0:
-            print('all fails')
+            print('all fails 2')
         else:
             min_tuple=min(temp_list1,key=lambda x: x[1])
             # print min_tuple
@@ -310,12 +308,12 @@ def remove_one_edge_by_finding_smallest_adding_volume_with_test_conditions(mesh,
 if __name__=="__main__":
 
    
-    input_image_path=sys.argv[1]+".png"
+    input_image_path=sys.argv[1]
     output_rawhull_obj_file=sys.argv[1]+"-rawconvexhull.obj"
     js_output_file=sys.argv[1]+"-final_simplified_hull.js"
     js_output_clip_file=sys.argv[1]+"-final_simplified_hull_clip.js"
     js_output_file_origin=sys.argv[1]+"-original_hull.js"
-    E_vertice_num=4
+    E_vertice_num=6
 
 
     import time 
@@ -348,7 +346,6 @@ if __name__=="__main__":
         # print 'current vertices number:', len(mesh.vs)
 
         if len(newhull.vertices) <= 10:
-            import json, os
             name = os.path.splitext( js_output_file )[0] + ( '-%02d.js' % len(newhull.vertices ))
             with open( name, 'w' ) as myfile:
                 json.dump({'vs': newhull.points[ newhull.vertices ].tolist(),'faces': newhull.points[ newhull.simplices ].tolist()}, myfile, indent = 4 )

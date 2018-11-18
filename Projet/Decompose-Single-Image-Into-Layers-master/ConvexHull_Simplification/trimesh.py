@@ -396,7 +396,7 @@ class TriMesh( object ):
                 originating_vertex, Set()
                 ).add( hei )
             if len( vertex2outgoing_boundary_hei[ originating_vertex ] ) > 1:
-                print 'Butterfly vertex encountered'
+                print('Butterfly vertex encountered')
         
         ## For each boundary halfedge, make its next_he one of the boundary halfedges
         ## originating at its to_vertex.
