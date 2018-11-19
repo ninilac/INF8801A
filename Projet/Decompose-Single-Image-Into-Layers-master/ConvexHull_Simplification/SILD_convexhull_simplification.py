@@ -201,23 +201,23 @@ def remove_one_edge_by_finding_smallest_adding_volume_with_test_conditions(mesh,
         #cvxopt.solvers.options['show_progress'] = False
         #cvxopt.solvers.options['glpk'] = dict(msg_lev='GLP_MSG_OFF')
 
-        res = linprog( c, A, b )
+        res = linprog(c, A, b, bounds=(-np.inf, np.inf))
 
         if res['status'] == 0:
                 
             newpoint = np.asfarray(res['x']).squeeze()
-        
+
 
             ######## using objective function to calculate (volume) or (distance to face) as priority.
 #             volume=res['primal objective']+b.sum()
-            
-    
+
+
             ####### manually compute volume as priority,so no relation with objective function
             tetra_volume_list=[]
             for each_face in old_face_list:
                 tetra_volume_list.append(compute_tetrahedron_volume(each_face,newpoint))
             volume=np.asarray(tetra_volume_list).sum()
-            
+
 
 
             temp_list1.append((count, volume, vertex1, vertex2))
@@ -313,7 +313,7 @@ if __name__=="__main__":
     js_output_file=sys.argv[1]+"-final_simplified_hull.js"
     js_output_clip_file=sys.argv[1]+"-final_simplified_hull_clip.js"
     js_output_file_origin=sys.argv[1]+"-original_hull.js"
-    E_vertice_num=6
+    E_vertice_num=5
 
 
     import time 
